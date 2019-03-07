@@ -1,0 +1,926 @@
+/*!
+ * fullPage 2.7.5
+ * https://github.com/alvarotrigo/fullPage.js
+ * MIT licensed
+ *
+ * Copyright (C) 2013 alvarotrigo.com - A project by Alvaro Trigo
+ */
+html.fp-enabled,
+.fp-enabled body {
+    margin: 0;
+    padding: 0;
+    overflow:hidden;
+
+    /*Avoid flicker on slides transitions for mobile phones #336 */
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+#superContainer {
+    height: 100%;
+    position: relative;
+
+    /* Touch detection for Windows 8 */
+    -ms-touch-action: none;
+
+    /* IE 11 on Windows Phone 8.1*/
+    touch-action: none;
+}
+.fp-section {
+    position: relative;
+    -webkit-box-sizing: border-box; /* Safari<=5 Android<=3 */
+    -moz-box-sizing: border-box; /* <=28 */
+    box-sizing: border-box;
+}
+.fp-slide {
+    float: left;
+}
+.fp-slide, .fp-slidesContainer {
+    height: 100%;
+    display: block;
+}
+.fp-slides {
+    z-index:1;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+    -webkit-transition: all 0.3s ease-out; /* Safari<=6 Android<=4.3 */
+    transition: all 0.3s ease-out;
+}
+.fp-section.fp-table, .fp-slide.fp-table {
+    display: table;
+    table-layout:fixed;
+    width: 100%;
+}
+.fp-tableCell {
+    display: table-cell;
+    vertical-align: middle;
+    width: 100%;
+    height: 100%;
+}
+.fp-slidesContainer {
+    float: left;
+    position: relative;
+}
+.fp-controlArrow {
+    -webkit-user-select: none; /* webkit (safari, chrome) browsers */
+    -moz-user-select: none; /* mozilla browsers */
+    -khtml-user-select: none; /* webkit (konqueror) browsers */
+    -ms-user-select: none; /* IE10+ */
+    position: absolute;
+    z-index: 4;
+    top: 50%;
+    cursor: pointer;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    margin-top: -38px;
+    -webkit-transform: translate3d(0,0,0);
+    -ms-transform: translate3d(0,0,0);
+    transform: translate3d(0,0,0);
+}
+.fp-controlArrow.fp-prev {
+    left: 15px;
+    width: 0;
+    border-width: 38.5px 34px 38.5px 0;
+    border-color: transparent #fff transparent transparent;
+}
+.fp-controlArrow.fp-next {
+    right: 15px;
+    border-width: 38.5px 0 38.5px 34px;
+    border-color: transparent transparent transparent #fff;
+}
+.fp-scrollable {
+    overflow: scroll;
+}
+.fp-notransition {
+    -webkit-transition: none !important;
+    transition: none !important;
+}
+#fp-nav {
+    position: fixed;
+    z-index: 100;
+    margin-top: -32px;
+    top: 50%;
+    opacity: 1;
+    -webkit-transform: translate3d(0,0,0);
+}
+#fp-nav.right {
+    right: 17px;
+}
+#fp-nav.left {
+    left: 17px;
+}
+.fp-slidesNav{
+    position: absolute;
+    z-index: 4;
+    left: 50%;
+    opacity: 1;
+}
+.fp-slidesNav.bottom {
+    bottom: 17px;
+}
+.fp-slidesNav.top {
+    top: 17px;
+}
+#fp-nav ul,
+.fp-slidesNav ul {
+  margin: 0;
+  padding: 0;
+}
+#fp-nav ul li,
+.fp-slidesNav ul li {
+    display: block;
+    width: 14px;
+    height: 13px;
+    margin: 7px;
+    position:relative;
+}
+.fp-slidesNav ul li {
+    display: inline-block;
+}
+#fp-nav ul li a,
+.fp-slidesNav ul li a {
+    display: block;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    text-decoration: none;
+}
+#fp-nav ul li a.active span,
+.fp-slidesNav ul li a.active span,
+#fp-nav ul li:hover a.active span,
+.fp-slidesNav ul li:hover a.active span{
+    height: 12px;
+    width: 12px;
+    margin: -6px 0 0 -6px;
+    border-radius: 100%;
+ }
+#fp-nav ul li a span,
+.fp-slidesNav ul li a span {
+    border-radius: 50%;
+    position: absolute;
+    z-index: 1;
+    height: 4px;
+    width: 4px;
+    border: 0;
+    background: #333;
+    left: 50%;
+    top: 50%;
+    margin: -2px 0 0 -2px;
+    -webkit-transition: all 0.1s ease-in-out;
+    -moz-transition: all 0.1s ease-in-out;
+    -o-transition: all 0.1s ease-in-out;
+    transition: all 0.1s ease-in-out;
+}
+#fp-nav ul li:hover a span,
+.fp-slidesNav ul li:hover a span{
+    width: 10px;
+    height: 10px;
+    margin: -5px 0px 0px -5px;
+}
+#fp-nav ul li .fp-tooltip {
+    position: absolute;
+    top: -2px;
+    color: #fff;
+    font-size: 14px;
+    font-family: arial, helvetica, sans-serif;
+    white-space: nowrap;
+    max-width: 220px;
+    overflow: hidden;
+    display: block;
+    opacity: 0;
+    width: 0;
+}
+#fp-nav ul li:hover .fp-tooltip,
+#fp-nav.fp-show-active a.active + .fp-tooltip {
+    -webkit-transition: opacity 0.2s ease-in;
+    transition: opacity 0.2s ease-in;
+    width: auto;
+    opacity: 1;
+}
+#fp-nav ul li .fp-tooltip.right {
+    right: 20px;
+}
+#fp-nav ul li .fp-tooltip.left {
+    left: 20px;
+}
+.fp-auto-height.fp-section,
+.fp-auto-height .fp-slide,
+.fp-auto-height .fp-tableCell{
+    height: auto !important;
+}
+.go{
+    position: fixed;
+    z-index: 11;
+    top:20px;
+    right:20px;
+}
+.continue{
+    position: fixed;
+    z-index: 11;
+    bottom:10px;
+    right:10px;
+    animation: cont 300ms linear infinite alternate;
+}
+/* 第一屏 */
+div.imgs01{
+    background-image: url(images/01-bg.png);
+    background-position: center bottom;
+    background-repeat: no-repeat;
+}
+.imgs01 .content{
+    width:900px;
+    height:600px;
+    position:absolute;
+    left:50%;
+    bottom:0;
+    margin-left:-450px;
+}
+.imgs01 .content .goods{
+    margin-top:200px;
+    text-align: center;
+}
+.imgs01 .content .goods>img{
+
+}
+.imgs01 .content .sofa{
+    position: absolute;
+    left: 230px;
+    top: 150px;
+   animation: sofa 800ms linear infinite alternate;
+}
+.imgs01 .content .fly{
+    position: absolute;
+    right: -50px;
+    top: 20px;
+    transition: all 2s;
+    animation: fly 1s linear 0s infinite alternate;
+}
+/* .imgs01 .content .fly{
+    position: absolute;
+    right: -50px;
+    top: 20px;
+} */
+@keyframes sofa{
+ 0%{
+     transform: translateY(-10px);
+ }
+ 100%{
+     transform: translateY(20px);
+ }
+}
+
+@keyframes fly{
+    0%{
+        transform: translateY(-20px);
+    }
+    100%{
+        transform: translateY(20px);
+    }
+   }
+   @keyframes cont{
+    0%{
+        transform: translateY(-10px);
+    }
+    100%{
+        transform: translateY(10px);
+    }
+   }
+   /* 第二屏 */
+   div.imgs02{
+    background-image: url(images/02-bg.png);
+    background-position: center bottom;
+    background-repeat: no-repeat;
+   }
+   .imgs02 .content{
+    width:900px;
+    height:600px;
+    position:absolute;
+    left:50%;
+    bottom:0;
+    margin-left:-450px;
+   }
+   .imgs02 .content .goods{
+   text-align: center;
+   /* position: absolute; */
+   margin-top:170px; 
+
+   }
+   .imgs02 .content .goods>img{
+   transform: scale(0);
+   transform-origin:right bottom;
+    }
+ .imgs02 .content .input{
+        position: absolute;
+        right: 171px;
+        top: 120px;
+        transform-origin: right top;
+        opacity: 0;
+}
+.imgs02 .content .input .key-box{}
+.imgs02 .content .input .key{
+    position: absolute;
+    left: 100px;
+    top: 4px;
+    opacity: 0;
+}
+ .imgs02 .content .text{
+    text-align: center;  
+    position: absolute;
+    left:50%;
+    transform: translateX(-50%);
+    top:0; 
+}
+.imgs02 .content .text .text1{
+    position: absolute;
+    opacity: 0;
+}
+.imgs02 .content .text .text2{
+
+}
+ .imgs02 .content .sofa{
+    transform: scale(0.5);
+    position: absolute;
+    left: 292px;
+    top: 132px;
+    opacity: 0;
+    z-index: 1001
+}
+.imgs02.show .content .input{
+    animation: input1 3s linear forwards;
+}
+.imgs02.show .content .input .key{
+    opacity: 1;
+    transition: all 1s linear 2s;
+}
+.imgs02.show .content .goods>img{
+    transform: scale(1);
+   transition: transform 1s linear 2s;
+     }
+.imgs02.show .content .text .text1{
+    opacity: 1;
+    transition:  opacity 1s linear 1s;
+}
+@keyframes input1{
+    0%{
+        opacity: 1;
+        transform: translate(2000px,130px);
+    }
+    33.33%{
+        transform: translate(-180px,130px);
+    }
+    66.67%{
+        transform: translate(-180px,130px);
+    }
+    100%{
+        opacity: 1;        
+        transform:scale(0.7);
+    }
+}
+.imgs02.cut .content .sofa{
+    animation:sofa02 700ms linear;
+}
+@keyframes sofa02{
+    0%{
+        opacity: 1;
+    }
+    100%{
+        opacity: 1;
+        transform:translate(-80px,700px);
+    }
+}
+/* 第三屏 */
+div.imgs03{
+    background-image: url(images/03-bg.png);
+    background-position: center bottom;
+    background-repeat: no-repeat;
+   }
+.imgs03 .content{
+    width:900px;
+    height:600px;
+    position:absolute;
+    left:50%;
+    bottom:0;
+    margin-left:-450px; 
+}
+.imgs03 .content .sofa{
+    display: none;
+    position: absolute;
+    left: 212px;
+    top: 180px;
+}
+.imgs03 .content .change{
+    position: absolute;
+    top: 300px;
+    left: 490px;
+}
+.imgs03 .content .change>img:nth-of-type(2){
+    /* display: none; */
+    opacity: 0;
+}
+.imgs03 .content .cart{
+    position: absolute;
+    top: 435px;
+    left: 490px;
+}
+.imgs03 .content .cart>img:nth-of-type(2){
+    /* display:none; */
+    opacity: 0;
+}
+.imgs03.show .content .sofa{
+display: block;
+}
+.imgs03.show .content .change>img:nth-of-type(1){
+    display: none;
+}
+.imgs03.show .content .change>img:nth-of-type(2){
+    /* display:inline-block; */
+    opacity: 1;
+    transition: opacity 500ms linear;
+}
+.imgs03.show .content .cart>img:nth-of-type(1){
+    display:none;
+}
+.imgs03.show .content .cart>img:nth-of-type(2){
+    /* display:inline-block; */
+    opacity: 1;
+    transition: opacity 500ms linear;
+}
+.imgs03.cut .content .sofa{
+    animation: sofa03 700ms linear;
+    z-index: 99;
+}
+@keyframes sofa03{
+    0%{}
+    100%{
+        transform:translate(190px,666px) rotate(45deg);
+    }
+}
+/* 第四屏 */
+div.imgs04{
+    background-image: url(images/04-bg.png);
+    background-position: center bottom;
+    background-repeat: no-repeat;
+   }
+.imgs04 .content{
+    width:900px;
+    height:600px;
+    position:absolute;
+    left:50%;
+    bottom:0;
+    margin-left:-450px; 
+}
+.imgs04 .content .cloud{
+    /* position: absolute; */
+    position: relative;
+    /* width: 100%; */
+    /* overflow: hidden; */
+    animation: cloud 12s linear infinite alternate;
+    
+}
+
+@keyframes cloud{
+0%{
+    transform: translateX(-400px)
+}
+100%{
+    transform: translateX(400px);
+}
+}
+.imgs04 .content .car{
+    text-align: center;
+    margin-top: 50px;
+    position: relative;
+    z-index: 1000;
+}
+.imgs04 .content .sofa{
+    position: absolute;
+    top: 200px;
+    left: 420px;
+    transform: rotate(45deg);
+    /*display: none;*/
+    opacity: 0
+}
+.imgs04 .content .text{
+    text-align: center;
+}
+.imgs04 .content .add{
+    position: absolute;
+    top:190px;
+    left:300px;
+    opacity: 0;
+}
+.imgs04 .content .add>img:nth-of-type(2){
+    position: absolute;
+    opacity: 0;
+    top:60px;
+    left:70px;
+}
+
+.imgs04 .content .text>img:nth-of-type(2){
+    position: absolute;
+    opacity: 0;
+}
+.imgs04.show .content .car{
+    transform:translateX(1000px);
+    transition:transform 2s linear;
+}
+.imgs04.show .content .sofa{
+    opacity: 1;    
+    transform:translateX(1000px) rotate(0deg);
+    transition:transform 2s linear;
+}
+.imgs04 .content .text.cut>img:nth-of-type(2){
+    position: static;
+    opacity: 1;
+    transition: opacity 1s linear 1s;
+}
+.imgs04 .content .text.cut>img:nth-of-type(1){
+   display: none;
+}
+.imgs04 .content .add.cut{
+   opacity: 1;
+   transition: opacity 1s  linear;
+}
+.imgs04 .content .add.cut>img:nth-of-type(2){
+    opacity: 1;
+   transition: opacity 1s  linear 1s;
+    
+}
+
+/* 第五屏 */
+div.imgs05{
+    background-image: url(images/05-bg.png);
+    background-position: center bottom;
+    background-repeat: no-repeat;
+   }
+.imgs05 .content{
+    width:900px;
+    height:100%;
+    position:absolute;
+    left:50%;
+    /* bottom:0; */
+    background: rgba(0, 0,0, 0.5);
+    margin-left:-450px; 
+}
+.imgs05 .content .card{
+    position: absolute;
+    top: 250px;
+    left: 0px;
+}
+.imgs05 .content .hand{
+    position: absolute;
+    top:100px;
+    left:100px;
+}
+.imgs05 .content .mouse{
+    position: absolute;
+    height:100%;
+    width: 400px;
+    overflow: hidden;
+    top:0;
+    right:0;
+}
+.imgs05 .content .sofa{
+    position: absolute;
+    left:100px;
+    bottom:100px;
+    transform:rotate(30deg) translate3D(-385px,-495px,0);
+    opacity: 0;
+}
+.imgs05 .content .mouse>img:nth-of-type(1){
+    position: absolute;
+    bottom: 250px;
+    right: 0;
+    /* opacity: 0; */
+}
+.imgs05 .content .mouse>img:nth-of-type(2){
+    position: absolute;
+    bottom: 250px;
+    right: 0;
+    opacity: 0;
+}
+.imgs05 .content .mouse>img:nth-of-type(3){
+    position: absolute;
+    transform: translateY(390px);
+    bottom: 0px;
+    right: 50px;
+    /* opacity: 0; */
+}
+.imgs05 .content .order{
+    position: absolute;
+    top: 280px;
+    left: 100px;
+}
+.imgs05 .content .text{
+    position: absolute;     
+    top: 100px;
+    left: 0px;;
+}
+.imgs05.show .content .mouse>img:nth-of-type(3){
+    transform: translateY(0px);
+    transition:1s linear;
+}
+.imgs05.show .content .mouse>img:nth-of-type(2){
+    opacity: 1;
+    transition: 20ms linear 1s;
+}
+.imgs05.show .content .sofa{
+    transform:rotate(30deg) translate3D(0,0,0);
+    opacity: 1;
+    transition: transform 1s linear 1s , opacity 20ms linear 1s;
+}
+.imgs05.show .content .order{
+    transform:  translateY(-130px);
+    transition: transform 1s linear 1.5s;
+}
+.imgs05.cut .content .sofa{
+    z-index: 100;
+    animation: sofa05 1s linear forwards	;
+}
+@keyframes  sofa05{
+    0%{
+        opacity: 1;
+        transform:  rotate(30deg);
+    }
+    99%{
+        opacity: 1;
+        transform: translateY(450px) scale(0.2) rotate(30deg);
+    }
+    100%{
+        opacity: 0;
+        transform: translateY(450px) scale(0.2) rotate(30deg);
+    }
+}
+/* 第六屏 */
+div.imgs06{
+    background-image: url(images/06-bg.png);
+    background-position: 25% bottom;
+    background-repeat: no-repeat;
+    /* background-size: 25%; */
+   }
+.imgs06 .content{
+    width:900px;
+    height:600px;
+    position:absolute;
+    left:50%;
+    bottom:0;
+    /* background: rgba(0, 0,0, 0.5); */
+    margin-left:-450px; 
+}
+.imgs06 .content .cloud{
+    position: absolute;
+    top:-50px;
+    left:0;
+}
+.imgs06 .content .text{
+    position: absolute;
+    top: 80px;
+    left: 140px;
+}
+.imgs06 .content .text>img:nth-of-type(2){
+    position: absolute;
+    top:0;
+    left:0;
+    opacity: 0;
+}
+.imgs06 .content .car{
+    position: absolute;
+    bottom: 0;
+    left:100px;
+}
+.imgs06 .content .box{
+    position: absolute;
+    top: 150px;
+    left: 140px;
+    transform: translateX(-350px);
+    z-index: 99;
+}
+.imgs06 .content .per,.imgs06 .content .door{
+    position: absolute;
+    bottom:115px;
+    right:50px;
+    opacity: 0;
+    transform-origin:right bottom;
+}
+.imgs06 .content .per{
+    transform: scale(0) translate(0px);
+}
+/* .imgs06 .content .door{
+    position: absolute;
+    top:0;
+    left:0;
+} */
+.imgs06 .content .worker{
+    position: absolute;
+    bottom:0;
+    left:100px;
+    transform: scale(0);
+    transform-origin: left bottom;
+}
+.imgs06 .content .worker>img:nth-of-type(2){
+    position: absolute;
+    right: -65px;
+    top: -130px;
+    opacity: 0;
+}
+.imgs06 .content .add{
+    position: absolute;
+    bottom: 125px;
+    left: 240px;
+    opacity: 0;
+}
+.imgs06 .content .add>img:nth-of-type(2){
+    position: absolute;
+    top: 0;
+    left:0;
+    opacity: 0;
+}
+.imgs06.show .content .box{
+    animation: box 1s linear forwards; 
+} 
+.imgs06.show {
+    transition: background 1s linear 1s;
+    background-position: 100% bottom;
+}
+.imgs06.show .content .worker{
+    animation: worker 1s linear 2s forwards;
+}
+.imgs06 .content .worker>img:nth-of-type(2){
+    /* display: inline-block; */
+    opacity: 1;
+    transition: opacity 300ms linear 3.5s;
+}
+.imgs06.show .content .add{
+    opacity: 1;
+    transition: opacity 300ms linear 1.3s;  
+}
+
+.imgs06.show .content .add>img:nth-of-type(2){
+     opacity: 1;
+     transition: opacity 300ms linear 1.8s;
+}
+.imgs06.show .content .per,.imgs06.show .content .door{
+    opacity: 1;
+    transition: opacity 300ms linear 3.3s;
+}
+.imgs06.show .content .per{
+    transform: scale(1) translateX(-165px);
+    transition: transform 1s linear 3.6s;
+}
+.imgs06.show .content .text>img:nth-of-type(2){
+    opacity: 1;
+    transition: opacity 300ms linear 2.5s;
+}
+
+@keyframes box{
+    0%{
+        transform: translateX(-350px);
+        opacity: 1;
+    }
+    30%{
+        transform: translateX(0px) scale(1);
+        opacity: 1;
+    }
+    100%{
+        transform: translateX(0px) scale(0.5) translateY(330px);
+        opacity: 0;
+    }
+}
+@keyframes worker{
+    0%{
+        transform: scale(0);
+    }
+    33%{
+        transform: scale(1);
+    }
+    66%{
+        transform: scale(1) translateY(-115px);
+    }
+    100%{
+        transform: scale(1) translateY(-115px) translateX(200px);
+    }
+}
+/* 第七屏 */
+div.imgs07{
+    background-image: url(images/07-bg.png);
+    background-position: center bottom;
+    background-repeat: no-repeat;
+    /* background-size: 25%; */
+   }
+.imgs07 .content{
+    width:900px;
+    height:600px;
+    position:absolute;
+    left:50%;
+    bottom:0;
+    /* background: rgba(0, 0,0, 0.5); */
+    margin-left:-450px; 
+}
+.imgs07 .content .star{
+    position: absolute;
+    top:138px;
+    left:154px;
+
+}
+.imgs07 .content .star>img{
+    margin-left:2px;
+    transform: scale(0);
+}
+.imgs07.show .content .star>img:nth-of-type(2){
+    transition-delay: 200ms;
+}
+.imgs07.show .content .star>img:nth-of-type(3){
+    transition-delay: 400ms;
+}
+.imgs07.show .content .star>img:nth-of-type(4){
+    transition-delay: 600ms;
+}
+.imgs07.show .content .star>img:nth-of-type(5){
+    transition-delay: 800ms;
+}
+.imgs07.show .content .star>img{
+ transform:scale(1);
+ transition: transform 200ms linear;
+}
+.imgs07 .content .text{
+    position:absolute;
+    top:175px;
+    left:165px;
+    transform:scale(0);
+}
+.imgs07.show .content .text{
+    animation:text7 1s linear 1s forwards;
+}
+@keyframes text7{
+  0%{
+      transform:scale(0);
+  }
+  80%{
+      transform: scale(1.3);
+  }
+  90%{
+      transform: scale(0.8);
+
+  }
+  100%{
+      transform: scale(1);
+  }
+}
+/* 第八屏 */
+div.imgs08{
+    background-image: url(images/08-bg.png);
+    background-position: center bottom;
+    /* background-repeat: no-repeat; */
+    /* background-size: 25%; */
+   }
+.imgs08 .content{
+    width:900px;
+    height:600px;
+    position:absolute;
+    left:50%;
+    bottom:0;
+    /* background: rgba(0, 0,0, 0.5); */
+    margin-left:-450px; 
+}
+.imgs08 .content .btn{
+    position: absolute;
+    width: 389px;
+    height:160px;
+    /* top:100px; */
+    left:50%;
+    transform: translateX(-50%);
+}
+.imgs08 .content .btn>img:nth-of-type(2){
+    position: absolute;
+    top:0;
+    left:0;
+    display:none;
+    /*opacity: 0;*/
+
+}
+/*.imgs08 .content .btn>img:nth-of-type(1){*/
+    /*position: absolute;*/
+    /*top:0;*/
+    /*left:0;*/
+/*}*/
+/*.imgs08 .content .btn:hover img:nth-of-type(2){*/
+    /*opacity: 1;*/
+/*}*/
+/*.imgs08 .content .btn:hover img:nth-of-type(1){*/
+   /*opacity: 0;*/
+/*}*/
+.imgs08 .content .hand{
+    position: absolute;
+    /* top:100px; */
+    left:390px;
+    top:50px;
+    
+    
+}
+.imgs08 .content .again{
+    position: absolute;
+    top:100px;
+    right:0;
+}
